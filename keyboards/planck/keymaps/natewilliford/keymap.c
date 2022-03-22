@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+// qmk compile -kb planck/rev6_drop -km natewilliford
 #include QMK_KEYBOARD_H
 #include "muse.h"
 
@@ -58,10 +58,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Colemak
  */
 [_COLEMAK] = LAYOUT_planck_grid(
-    KC_TAB,  LT(0,KC_Q), LT(0,KC_W), LT(0,KC_F), LT(0,KC_P), LT(0,KC_B), LT(0,KC_J), LT(0,KC_L), LT(0,KC_U), LT(0,KC_Y), KC_SCLN,    KC_BSPC,
-    KC_ESC,  LT(0,KC_A), LT(0,KC_R), LT(0,KC_S), LT(0,KC_T), LT(0,KC_G), LT(0,KC_M), LT(0,KC_N), LT(0,KC_E), LT(0,KC_I), LT(0,KC_O), KC_QUOT,
-    KC_LSFT, LT(0,KC_Z), LT(0,KC_X), LT(0,KC_C), LT(0,KC_D), LT(0,KC_V), LT(0,KC_K), LT(0,KC_H), KC_COMM,    KC_DOT,     KC_SLSH,    KC_SFTENT,
-    KC_LCTL, KC_APP,     KC_LGUI,    KC_LALT,    LOWER,      KC_SPC,     KC_SPC,     RAISE,      KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT
+    KC_TAB,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,   KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_DEL,
+    KC_ESC,  KC_A,LALT_T(KC_R),LSFT_T(KC_S),LCTL_T(KC_T),KC_G,KC_M,LCTL_T(KC_N),LSFT_T(KC_E),LALT_T(KC_I),KC_O,KC_QUOT,
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,   KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+    KC_LEFT, KC_RIGHT,KC_LCTL, KC_LALT, LOWER,   KC_SPC, KC_BSPC, RAISE,   KC_ENT,  KC_RGUI, KC_DOWN, KC_UP
 ),
 
 /* Dvorak
@@ -82,40 +82,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     BACKLIT, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
 ),
 
-/* Lower
- * ,-----------------------------------------------------------------------------------.
- * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |   _  |   +  |   {  |   }  |  |   |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |ISO ~ |ISO | | Home | End  |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      | Next | Vol- | Vol+ | Play |
- * `-----------------------------------------------------------------------------------'
- */
+/* Lower */
 [_LOWER] = LAYOUT_planck_grid(
-    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR,    KC_ASTR,    KC_LPRN, KC_RPRN, KC_DEL,
-    KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_UNDS,    KC_PLUS,    KC_LCBR, KC_RCBR, KC_PIPE,
-    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  S(KC_NUHS), S(KC_NUBS), KC_HOME, KC_END,  _______,
-    _______, _______, _______, _______, _______, _______, _______, _______,    KC_MNXT,    KC_VOLD, KC_VOLU, KC_MPLY
+    KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
+    KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_TILD,
+    _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
-/* Raise
- * ,-----------------------------------------------------------------------------------.
- * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |   -  |   =  |   [  |   ]  |  \   |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |ISO # |ISO / |Pg Up |Pg Dn |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      | Next | Vol- | Vol+ | Play |
- * `-----------------------------------------------------------------------------------'
- */
+/* Raise */
 [_RAISE] = LAYOUT_planck_grid(
-    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
-    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NUHS, KC_NUBS, KC_PGUP, KC_PGDN, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY
+    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
+    _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______, LCTL(KC_LEFT), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, LCTL(KC_RGHT),
+    _______, _______, _______, _______, _______, _______, KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
 /* Plover layer (http://opensteno.org)
@@ -256,87 +236,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_PLOVER);
       }
       return false;
-      break;
-
-    // Custom tap/hold interceptors for ctrl variants.
-    // https://docs.qmk.fm/#/mod_tap?id=intercepting-mod-taps
-    case LT(0,KC_A):
-      return custom_hold_ctrl_intercept(KC_A, record);
-      break;
-    case LT(0,KC_B):
-      return custom_hold_ctrl_intercept(KC_B, record);
-      break;
-    case LT(0,KC_C):
-      return custom_hold_ctrl_intercept(KC_C, record);
-      break;
-    case LT(0,KC_D):
-      return custom_hold_ctrl_intercept(KC_D, record);
-      break;    
-    case LT(0,KC_E):
-      return custom_hold_ctrl_intercept(KC_E, record);
-      break;
-    case LT(0,KC_F):
-      return custom_hold_ctrl_intercept(KC_F, record);
-      break;    
-    case LT(0,KC_G):
-      return custom_hold_ctrl_intercept(KC_G, record);
-      break;
-    case LT(0,KC_H):
-      return custom_hold_ctrl_intercept(KC_H, record);
-      break;
-    case LT(0,KC_I):
-      return custom_hold_ctrl_intercept(KC_I, record);
-      break;    
-    case LT(0,KC_J):
-      return custom_hold_ctrl_intercept(KC_J, record);
-      break;
-    case LT(0,KC_K):
-      return custom_hold_ctrl_intercept(KC_K, record);
-      break;    
-    case LT(0,KC_L):
-      return custom_hold_ctrl_intercept(KC_L, record);
-      break;
-    case LT(0,KC_M):
-      return custom_hold_ctrl_intercept(KC_M, record);
-      break;
-    case LT(0,KC_N):
-      return custom_hold_ctrl_intercept(KC_N, record);
-      break;    
-    case LT(0,KC_O):
-      return custom_hold_ctrl_intercept(KC_O, record);
-      break;
-    case LT(0,KC_P):
-      return custom_hold_ctrl_intercept(KC_P, record);
-      break;    
-    case LT(0,KC_Q):
-      return custom_hold_ctrl_intercept(KC_Q, record);
-      break;
-    case LT(0,KC_R):
-      return custom_hold_ctrl_intercept(KC_R, record);
-      break;
-    case LT(0,KC_S):
-      return custom_hold_ctrl_intercept(KC_S, record);
-      break;    
-    case LT(0,KC_T):
-      return custom_hold_ctrl_intercept(KC_T, record);
-      break;
-    case LT(0,KC_U):
-      return custom_hold_ctrl_intercept(KC_U, record);
-      break;
-    case LT(0,KC_V):
-      return custom_hold_ctrl_intercept(KC_V, record);
-      break;    
-    case LT(0,KC_W):
-      return custom_hold_ctrl_intercept(KC_W, record);
-      break;
-    case LT(0,KC_X):
-      return custom_hold_ctrl_intercept(KC_X, record);
-      break;    
-    case LT(0,KC_Y):
-      return custom_hold_ctrl_intercept(KC_Y, record);
-      break;
-    case LT(0,KC_Z):
-      return custom_hold_ctrl_intercept(KC_Z, record);
       break;
   }
   return true;

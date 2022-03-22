@@ -47,3 +47,9 @@
 
 // Most tactile encoders have detents every 4 stages
 #define ENCODER_RESOLUTION 4
+
+// Helpful for home row mods.
+#define IGNORE_MOD_TAP_INTERRUPT
+#define TAPPING_FORCE_HOLD
+#define TAPPING_TERM 220
+// #define PERMISSIVE_HOLD
