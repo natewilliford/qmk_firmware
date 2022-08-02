@@ -7,11 +7,17 @@
 enum layer_number {
   _QWERTY = 0,
   _COLMAK,
+  _COLMAK_MAC,
+  _NUMPAD,
+  _MOUSE,
   _LOWER,
   _RAISE,
   _ADJUST,
-  _NUMPAD,
-  _MOUSE,
+};
+
+enum custom_keycodes {
+  WORD_BACK = SAFE_RANGE,
+  WORD_FOR,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -60,13 +66,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                         KC_LCTRL, KC_LALT, MO(_LOWER), KC_SPC, KC_BSPC, MO(_RAISE), KC_ENT, KC_RGUI
 ),
 
+[_COLMAK_MAC] = LAYOUT(
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______,LGUI_T(KC_T),_______,                _______,LGUI_T(KC_N),_______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+                             KC_LGUI, _______, _______, _______, _______, _______, _______, KC_LCTRL
+),
+
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |                    |  F7  |  F8  |  F9  | F10  | F11  | F12  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |   `  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   -  |
+ * |   `  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   ~  |
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |      | Mute | Vol- | Vol+ |Ply/Ps|      |-------|    |-------|      |   _  |   +  |   {  |   }  |   |  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -99,7 +113,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_RAISE] = LAYOUT(
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
   KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
-  _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______,                   LCTL(KC_LEFT), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, LCTL(KC_RGHT),
+  _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______,                   WORD_BACK, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, WORD_FOR,
   _______, _______, _______, _______, _______, _______, _______, _______, KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
                              _______, _______, _______, _______, _______, _______, _______, _______
 ),
@@ -121,7 +135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT(
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX,DF(_QWERTY),DF(_COLMAK),TG(_NUMPAD),TG(_MOUSE),XXXXXXX,
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX,DF(_QWERTY),DF(_COLMAK),TG(_COLMAK_MAC),TG(_NUMPAD),TG(_MOUSE),
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                              _______, _______, _______, _______, _______,  _______, _______, _______
 ),
@@ -136,16 +150,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   (   |    |    )  |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      |  0   |  0   |  .   |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |TO(0) | /Space  /       \BackSP\  |TO(0) |Enter | RGUI |
+ *                   | LAlt | LGUI |LOWER | /Space  /       \BackSP\  |RAISE |Enter | RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
 [_NUMPAD] = LAYOUT(
-  _______, _______, _______, _______, _______, _______,                     KC_PSLS, KC_7, KC_8, KC_9,    KC_PMNS, _______,
-  _______, _______, _______, _______, _______, _______,                     KC_PAST, KC_4, KC_5, KC_6,    KC_PLUS, _______,
-  KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                     _______, KC_1, KC_2, KC_3,    KC_EQL,  _______,
-  _______, _______, _______, _______, _______, _______,  KC_LPRN, KC_RPRN,  KC_PLUS, KC_0, KC_0, KC_PDOT, _______, _______,
-                             _______, _______, TO(0),    _______, _______,  TO(0),   _______, _______
+  _______, _______, _______, _______, _______, _______,                     KC_PSLS, KC_P7, KC_P8, KC_P9,    KC_PMNS, _______,
+  _______, _______, _______, _______, _______, _______,                     KC_PAST, KC_P4, KC_P5, KC_P6,    KC_PLUS, _______,
+  KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                     _______, KC_P1, KC_P2, KC_P3,    KC_PEQL,  _______,
+  _______, _______, _______, _______, _______, _______,  KC_LPRN, KC_RPRN,  KC_PLUS, KC_P0, KC_0, KC_PDOT, _______, _______,
+                             _______, _______, _______,  _______, _______, _______,   _______, _______
 ),
 
 /* MOUSE
@@ -218,17 +232,47 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef OLED_ENABLE
     set_keylog(keycode, record);
 #endif
+    int word_mod = KC_LCTRL;
+    if(IS_LAYER_ON(_COLMAK_MAC)) {
+        word_mod = KC_LALT;
+    }
+    switch (keycode) {
+    case WORD_BACK:
+      register_code(word_mod);
+      tap_code(KC_LEFT);
+      unregister_code(word_mod);
+      break;
+    case WORD_FOR:
+      register_code(word_mod);
+      tap_code(KC_RIGHT);
+      unregister_code(word_mod);
+      break;
+    default:
+      break;
+    }
     // set_timelog();
   }
   return true;
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-  print("encoder");
-  if (clockwise) {
-      tap_code_delay(KC_VOLU, 10);
+  if (get_highest_layer(layer_state|default_layer_state) == _LOWER) {
+    int jump_lines = 5;
+    if (clockwise) {
+      for(int i = 0; i < jump_lines; i++) {
+        tap_code(KC_UP);
+      }
+    } else {
+      for(int i = 0; i < jump_lines; i++) {
+        tap_code(KC_DOWN);
+      }
+    }
   } else {
-      tap_code_delay(KC_VOLD, 10);
+    if (clockwise) {
+        tap_code_delay(KC_VOLU, 10);
+    } else {
+        tap_code_delay(KC_VOLD, 10);
+    }
   }
   return false;
 }
