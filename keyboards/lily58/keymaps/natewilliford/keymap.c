@@ -18,6 +18,11 @@ enum layer_number {
 enum custom_keycodes {
   WORD_BACK = SAFE_RANGE,
   WORD_FOR,
+  MLT_LN_DN,
+  MLT_LN_UP,
+  CUT,
+  COPY,
+  PASTE
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -82,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |   `  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   ~  |
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
- * |      | Mute | Vol- | Vol+ |Ply/Ps|      |-------|    |-------|      |   _  |   +  |   {  |   }  |   |  |
+ * |      |      | Cut  | Copy |Paste |      |-------|    |-------|      |   _  |   +  |   {  |   }  |   |  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LCtl | LAlt |LOWER | /Space  /       \BackSP\  |RAISE |Enter | RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -92,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______,_______, _______, _______,
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                     KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
   KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_TILD,
-  _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
+  _______, _______, CUT,     COPY,    PASTE,   _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
                              _______, _______, _______, _______, _______,  _______, _______, _______
 ),
 
@@ -102,9 +107,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |   `  |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      | Home |Pg Up |Pg Dn |  End |      |-------.    ,-------|Ctrl->| Left | Down |  Up  |Right |Ctrl<-|
+ * |      | Home |Mlt Up|Mlt Dn|  End |      |-------.    ,-------|Ctrl->| Left | Down |  Up  |Right |Ctrl<-|
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|   +  |   -  |   =  |   [  |   ]  |   \  |
+ * |      | Mute | Vol+ | Vol- |Ply/Ps|      |-------|    |-------|   +  |   -  |   =  |   [  |   ]  |   \  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | LGUI |LOWER | /Space  /       \BackSP\  |RAISE |Enter | RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -113,8 +118,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_RAISE] = LAYOUT(
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
   KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
-  _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______,                   WORD_BACK, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, WORD_FOR,
-  _______, _______, _______, _______, _______, _______, _______, _______, KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
+  _______, KC_HOME,MLT_LN_UP,MLT_LN_DN, KC_END,  _______,                   WORD_BACK, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, WORD_FOR,
+  _______, KC_MUTE, KC_VOLU, KC_VOLD, KC_MPLY, _______, _______, _______, KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
                              _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
@@ -227,25 +232,50 @@ bool oled_task_user(void) {
 }
 #endif // OLED_ENABLE
 
+void modded_tap_code(uint16_t code, int mod) {
+  register_code(mod);
+  tap_code(code);
+  unregister_code(mod);
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
+    int jump_lines = 5;
 #ifdef OLED_ENABLE
     set_keylog(keycode, record);
 #endif
     int word_mod = KC_LCTRL;
+    int copy_pasta_mod = KC_LCTRL;
     if(IS_LAYER_ON(_COLMAK_MAC)) {
         word_mod = KC_LALT;
+        copy_pasta_mod = KC_LGUI;
     }
+
     switch (keycode) {
     case WORD_BACK:
-      register_code(word_mod);
-      tap_code(KC_LEFT);
-      unregister_code(word_mod);
+      modded_tap_code(KC_LEFT, word_mod);
       break;
     case WORD_FOR:
-      register_code(word_mod);
-      tap_code(KC_RIGHT);
-      unregister_code(word_mod);
+      modded_tap_code(KC_RIGHT, word_mod);
+      break;
+    case CUT:
+      modded_tap_code(KC_X, copy_pasta_mod);
+      break;
+    case COPY:
+      modded_tap_code(KC_C, copy_pasta_mod);
+      break;
+    case PASTE:
+      modded_tap_code(KC_V, copy_pasta_mod);
+      break;
+    case MLT_LN_UP:
+      for(int i = 0; i < jump_lines; i++) {
+        tap_code(KC_UP);
+      }
+      break;
+    case MLT_LN_DN:
+      for(int i = 0; i < jump_lines; i++) {
+        tap_code(KC_DOWN);
+      }
       break;
     default:
       break;
