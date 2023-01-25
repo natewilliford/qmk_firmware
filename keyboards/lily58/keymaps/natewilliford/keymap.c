@@ -7,6 +7,7 @@
 enum layer_number {
   _QWERTY = 0,
   _COLMAK,
+  _COLMAK_GAMING,
   _COLMAK_MAC,
   _NUMPAD,
   _MOUSE,
@@ -59,7 +60,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | Tab  |   Q  |   W  |   F  |   P  |   B  |                    |   J  |   L  |   U  |   Y  |   ;  |KC_DEL|
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * | ESC  |   A  |   R  |   S  |   T  |   G  |-------.    ,-------|   M  |   N  |   E  |   I  |   O  |  '   |
- * |------+------+------+------+------+------| MPLY  |    | MUTE  |------+------+------+------+------+------|
+ * |------+------+------+------+------+------|TG CMAK|    | MUTE  |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   D  |   V  |-------|    |-------|   K  |   H  |   ,  |   .  |   /  |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LCtl | LAlt |LOWER | /Space  /       \BackSP\  |RAISE |Enter | RGUI |
@@ -74,6 +75,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                    _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
+// Disables the home row mods so I can hold down keys for gaming.
+[_COLMAK_GAMING] = LAYOUT(
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, KC_R,    KC_S,    KC_T ,   _______,                   _______, KC_N,    KC_E,    KC_I,    _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+                             _______, _______, _______, _______, _______, _______, _______, _______
+),
+
+// Swaps CTRL and Super (GUI) for Mac. There is also affects some logic in process_record_user, e.g. using alt for jumping words.
 [_COLMAK_MAC] = LAYOUT(
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
@@ -132,9 +143,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------.    ,-------|      |QWERTY| Mac  |NUMPAD|MOUSE |      |
+ * |      |      |      |      |      |      |-------.    ,-------|      |QWERTY|COLMAK|      |      |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * |      |      |      |      |      |      |-------|    |-------|      |Gaming| Mac  |NUMPAD|MOUSE|      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | LGUI |LOWER | /Space  /       \BackSP\  |RAISE |Enter | RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -143,8 +154,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT(
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX,DF(_QWERTY),TG(_COLMAK_MAC),TG(_NUMPAD),TG(_MOUSE), XXXXXXX,
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX,TO(_QWERTY), TO(_COLMAK), XXXXXXX, XXXXXXX, XXXXXXX,
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,TG(_COLMAK_GAMING),TG(_COLMAK_MAC), TG(_NUMPAD), TG(_MOUSE), XXXXXXX,
                              _______, _______, _______, _______, _______,  _______, _______, _______
 ),
 
@@ -243,7 +254,7 @@ void modded_tap_code(uint16_t code, int mod) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
-    int jump_lines = 5;
+    const int jump_lines = 5;
 #ifdef OLED_ENABLE
     set_keylog(keycode, record);
 #endif
