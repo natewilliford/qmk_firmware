@@ -50,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,  KC_P,    KC_DEL,
   KC_ESC,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,  KC_SCLN, KC_QUOT,
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,TG(_COLMAK),KC_MUTE, KC_N,    KC_M, KC_COMM,  KC_DOT,  KC_SLSH, KC_RSFT,
-                        KC_LCTRL, KC_LALT, MO(_LOWER), KC_SPC, KC_BSPC, MO(_RAISE), KC_ENT, KC_RGUI
+                        KC_LCTL, KC_LALT, MO(_LOWER), KC_SPC, KC_BSPC, MO(_RAISE), KC_ENT, KC_RGUI
 ),
 
 /* COLEMAK
@@ -90,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______,LGUI_T(KC_T),_______,                _______,LGUI_T(KC_N),_______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-                             KC_LGUI, _______, _______, _______, _______, _______, _______, KC_LCTRL
+                             KC_LGUI, _______, _______, _______, _______, _______, _______, KC_LCTL
 ),
 
 /* LOWER
@@ -258,8 +258,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef OLED_ENABLE
     set_keylog(keycode, record);
 #endif
-    int word_mod = KC_LCTRL;
-    int copy_pasta_mod = KC_LCTRL;
+    int word_mod = KC_LCTL;
+    int copy_pasta_mod = KC_LCTL;
     if(IS_LAYER_ON(_COLMAK_MAC)) {
         word_mod = KC_LALT;
         copy_pasta_mod = KC_LGUI;
@@ -303,26 +303,4 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // set_timelog();
   }
   return true;
-}
-
-bool encoder_update_user(uint8_t index, bool clockwise) {
-  if (get_highest_layer(layer_state|default_layer_state) == _LOWER) {
-    int jump_lines = 5;
-    if (clockwise) {
-      for(int i = 0; i < jump_lines; i++) {
-        tap_code(KC_UP);
-      }
-    } else {
-      for(int i = 0; i < jump_lines; i++) {
-        tap_code(KC_DOWN);
-      }
-    }
-  } else {
-    if (clockwise) {
-        tap_code_delay(KC_VOLU, 10);
-    } else {
-        tap_code_delay(KC_VOLD, 10);
-    }
-  }
-  return false;
 }
